@@ -563,13 +563,19 @@ export class GraphHandler {
       outputNode: LGraphNode,
       outputIndex: number
     ): boolean {
-      // Count number of unconnected input sockets
-      this.addInput('prout', null);
-      this.schema.inputs['prout'] = {
-        type: 'typing.Any',
-        optional: true
+      const connectedInputs = this.inputs.filter(
+        (inp: INodeInputSlot) => inp.link === null
+      );
+      const n = connectedInputs.length;
+      if (n <= 1) {
+        const inpName = `input${n + 1}`;
+        this.addInput(inpName, null);
+        this.schema.inputs[inpName] = {
+          type: 'typing.Any',
+          optional: true
+        };
+        return true;
       }
-      return true;
     };
 
     const newNode = new NodeClass('new_node');
